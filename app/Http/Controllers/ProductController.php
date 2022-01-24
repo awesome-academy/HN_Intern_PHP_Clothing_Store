@@ -203,4 +203,32 @@ class ProductController extends Controller
         
         return redirect()->back();
     }
+
+    public function showProduct()
+    {
+        if (!Auth::user()->tokenCan('product:viewAll')) {
+            return response()->json([
+                'status_code' => 403,
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+        
+        return response()->json([
+            'data' => $this->productRepo->getAll(),
+        ], 200);
+    }
+
+    public function showProductById($id)
+    {
+        if (!Auth::user()->tokenCan('product:view')) {
+            return response()->json([
+                'status_code' => 403,
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+
+        return response()->json([
+            'data' => $this->productRepo->find($id),
+        ], 200);
+    }
 }
